@@ -1,140 +1,43 @@
 from dataclasses import dataclass
-
-@dataclass
-class Pattern:
-    data: str
-
-    def prefix(self, string: str):
-        self.data = string + self.data
-
-    def suffix(self, string: str):
-        self.data = self.data + string
-
-    def decorate(self, prefix: str, suffix: str):
-        self.data = prefix + self.data + suffix
-
-
-class PatternCollection:
-    def __init__(self, texts = None):
-        if texts is None:
-            texts = []
-        self.texts = texts
-
-    def add_pattern(self, text: Pattern):
-        self.texts.append(text)
-
-    def prefix(self, string: str):
-        for text in self.texts:
-            text.prefix(string)
-
-    def suffix(self, string: str):
-        for text in self.texts:
-            text.suffix(string)
-
-    def decorate(self, prefix: str, suffix: str):
-        for text in self.texts:
-            text.decorate(prefix, suffix)
-
-
-class TextMatch:
-    def __init__(self, type: str, text_match: Pattern, text_excludes: PatternCollection):
-        self.type = type
-        self.text_match = text_match
-        self.text_excludes = text_excludes
-
-    def decorate_text_excludes(self, prefix: str, suffix: str):
-        self.text_excludes.decorate(prefix, suffix)
-
-    def prefix(self, string: str):
-        self.text_excludes.prefix(string)
-
-    def suffix(self, string: str):
-        self.text_excludes.suffix(string)
+from json import dumps
 
 
 class MatchingRule:
-    def __init__(self, identifier: str):
+    def __init__(
+            self, identifier: str, pattern_type: str, text_match: str, text_excludes: []
+    ):
         self.identifier = identifier
-        self.text_match = Pattern('')
-        self.text_excludes = PatternCollection()
-        self.matching_pattern = ''
+        self.pattern_type = pattern_type
+        self.text_match = text_match
+        self.text_excludes = text_excludes
 
-    def set_text_match(self, text_match: str, type: str, text_excludes: [str]):
-        self.text_match.suffix(text_match)
-        for text in text_excludes:
-            self.text_excludes.add_pattern(Pattern(text))
-        self.matching_pattern = type
+    def get_identifier(self) -> str:
+        return self.identifier
 
-    def exclude_text_match(self, pattern):
+    def get_excludes(self) -> []:
         return self.text_excludes
 
-    def get_text_match(self) -> Pattern:
+    def get_text_match(self) -> str:
         return self.text_match
 
     def get_pattern_type(self) -> str:
-        return self.matching_pattern
+        return self.pattern_type
 
+    def prefix_text_match(self, prefix: str):
+        self.text_match = prefix + self.get_text_match()
 
-class IPatternType:
-    def can_build(self, type: str) -> bool:
-        raise NotImplementedError
+    def suffix_text_match(self, suffix: str):
+        self.text_match = self.get_text_match() + suffix
 
-    def build(self, rule: MatchingRule):
-        raise NotImplementedError
+    def decorate_text_match(self, prefix: str, suffix: str):
+        self.text_match = prefix + self.get_text_match() + suffix
 
+class RuleCollection:
+    def __init__(self):
+        self.rules = []
 
-class PatternTypes(IPatternType):
-    def __init__(self, types: [IPatternType] = None):
-        if types is None:
-            types = []
-        self.types = types
+    def add_rule(self, identifier: str, pattern_type: str, text_match: str, text_excludes: []):
+        self.rules.append(MatchingRule(identifier, pattern_type, text_match, text_excludes))
 
-    def add_type(self, type: IPatternType):
-        self.types.append(type)
-
-    def can_build(self, type: str) -> bool:
-        for type in self.types:
-            if not type.can_handle(type):
-                return False
-
-        return True
-
-    def build(self, rule: MatchingRule):
-        for type in self.types:
-            if type.can_handle(rule.get_pattern_type()):
-                type.build(rule)
-
-
-class BasePatternType(IPatternType):
-    def __init__(self, type: str):
-        self.type = type
-
-    def can_build(self, type: str) -> bool:
-        return self.type == type
-
-    def build(self, rule: MatchingRule):
-        raise NotImplementedError
-
-
-class StartMatchingType(BasePatternType):
-    def __init__(self, type: str = 'S'):
-        BasePatternType.__init__(self, type)
-
-    def build(self, rule: MatchingRule):
-        rule.get_text_match().suffix('.*')
-
-
-class RegexMatchingType(BasePatternType):
-    def __init__(self, type: str = 'R'):
-        BasePatternType.__init__(self, type)
-
-    def build(self, rule: MatchingRule):
-        return
-
-
-class AnywhereMatchingType(BasePatternType):
-    def __init__(self, type: str = 'A'):
-        BasePatternType.__init__(self, type)
-
-    def build(self, rule: MatchingRule):
-        return rule.get_text_match().decorate('.*', '.*')
+    def get_rules(self) -> [MatchingRule]:
+        return self.rules
