@@ -1,0 +1,16 @@
+../.idea/
+*.iml
+*.py[cod]
+.cache
+cache/
+__pycache__/
+build/
+develop-eggs/
+.eggs/
+eggs/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+*.log
+log/

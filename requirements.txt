@@ -1,0 +1,16 @@
+apache-libcloud
+pandas == 1.2.0
+numpy == 1.18
+pytest
+pytest-bdd == 4.0.2
+behold
+click
+fs
+profilehooks
+luigi
+injector
+dagster
+dagit
+google-cloud-bigquery
+pandas-gbq
+jinjasql
