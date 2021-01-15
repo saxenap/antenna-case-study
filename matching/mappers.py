@@ -76,4 +76,3 @@ class PandasCsvRuleMapper(IRuleMapper):
 
     def get_values_for_id(self, id: str, where_col_name: str) -> dict:
         return self.context.pandas.Series(self.df[id].values,index=self.df[where_col_name]).to_dict()
-
