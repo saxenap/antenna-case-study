@@ -1,4 +1,4 @@
-from antenna.enrichment.rules import MatchingRule
+from antenna.matching.rules import MatchingRule
 from dataclasses import dataclass
 
 

@@ -1,4 +1,4 @@
-from antenna.enrichment.rules import RuleCollection, MatchingRule
+from antenna.matching.rules import RuleCollection, MatchingRule
 from pandas.core.frame import pandas_dtype, DataFrame
 from dataclasses import dataclass
 import numpy
@@ -20,7 +20,7 @@ class ColumnNames:
     text_match: str = 'text_match'
     text_exclude: str = 'text_exclude'
     matching_type: str = 'matching'
-    other: str = ''
+
 
 @dataclass
 class PandasContext:

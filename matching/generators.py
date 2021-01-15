@@ -1,17 +1,22 @@
-from antenna.enrichment.rules import MatchingRule, RuleCollection
-from antenna.enrichment.patterns import IPatternTypeEnricher
+from antenna.matching.rules import MatchingRule, RuleCollection
+from antenna.matching.patterns import IPatternTypeEnricher
 from dataclasses import dataclass
 
 
 # (?!.*(Fake|Franchise|a^))^(.*CBS.*)$
 
-
-
-
 @dataclass
 class RegexByIdentifier:
     identifier: str
     data: str
+
+
+class IGenerator:
+    def add_rule(self, rule):
+        raise NotImplementedError
+
+    def get_data(self) -> [RegexByIdentifier]:
+        raise NotImplementedError
 
 
 class RegexesByIdentifierCombiner:
@@ -41,7 +46,7 @@ class ListCleaner:
     def replace(self, look_in: [], bad_values: [], good_value: str) -> []:
         return [good_value if v in bad_values else v for v in look_in]
 
-class NegativeLookahead:
+class NegativeLookahead(IGenerator):
 
     pattern = '(?!.*({piped_excludes}))^({single_text_match})$'
 
@@ -94,6 +99,7 @@ class JoinedIdentifierDataBuilder:
             id_data.append(IdentifierData(id, data))
 
         return id_data
+
 
 class NegativeLookbehind:
     def __init__(self, pattern_type: IPatternTypeEnricher, builder: JoinedIdentifierDataBuilder):
