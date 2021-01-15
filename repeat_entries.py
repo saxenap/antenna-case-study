@@ -16,5 +16,3 @@ class PandasRepeatEntriesProcessor:
     def process(self):
         # Remove transactions that have an older entry
         self.df.sort_values(self.update_col_name).drop_duplicates(self.dup_col_name,keep='last')
-
-

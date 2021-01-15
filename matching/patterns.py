@@ -44,7 +44,7 @@ class BasePatternType(IPatternTypeEnricher):
 class StartMatchingType(BasePatternType):
 
     def enrich(self, string: str) -> str:
-        return '.*' + string
+        return string
 
 
 class RegexMatchingType(BasePatternType):
