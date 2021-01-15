@@ -9,3 +9,4 @@ pandas-gbq
 # jinjasql
 dagster
 dagit
+google-api-python-client

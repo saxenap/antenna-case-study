@@ -14,3 +14,4 @@ eggs/
 .pytest_cache/
 *.log
 log/
+dev.py

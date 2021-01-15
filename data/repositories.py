@@ -23,8 +23,6 @@ class PandasRepository(IDataRepository):
 
     def add_col(self, col_name: str, values: list):
         self.get_df()[col_name] = values
-        print(values)
-        print(self.get_df())
 
 
     def get_values_for(self, col_name: str) -> []:
